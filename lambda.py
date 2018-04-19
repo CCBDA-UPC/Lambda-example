@@ -43,6 +43,19 @@ def lambda_handler(event, context):
         return respond(ValueError('Unsupported method "{}"'.format(operation)))
     
 ###### DO NOT COPY TO AWS LAMBDA CONSOLE FROM HERE
+###### Less optimized version of lambda_handler()
+#    operation = event['httpMethod']
+#    if operation is 'GET':
+#        return respond(None, dynamo.scan(event['queryStringParameters']))
+#    elif operation is 'POST':
+#        return respond(None, dynamo.put_item(json.loads(event['body'])))
+#    elif operation is 'DELETE':
+#        return respond(None, dynamo.delete_item(json.loads(event['body'])))
+#    elif operation is 'PUT':
+#        return respond(None, dynamo.update_item(json.loads(event['body'])))
+#    else:
+#        return respond(ValueError('Unsupported method "{}"'.format(operation)))
+###### USE THE CODE BELOW TO TEST lambda_handler()
 
 print('--------------------GET event test')
 get_event = {
