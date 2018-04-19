@@ -41,3 +41,43 @@ def lambda_handler(event, context):
         return respond(None, operations[operation](dynamo, payload))
     else:
         return respond(ValueError('Unsupported method "{}"'.format(operation)))
+    
+###### DO NOT COPY TO AWS LAMBDA CONSOLE FROM HERE
+
+print('--------------------GET event test')
+get_event = {
+    "httpMethod": "GET",
+    "queryStringParameters": {
+        "TableName": "ccbda-example"
+    }
+}
+result = lambda_handler(get_event, None)
+print('--------------------RESULT')
+print(json.dumps(result, indent=2))
+print('--------------------RESULT body')
+print(json.dumps(json.loads(result['body']), indent=2))
+
+
+
+print('--------------------POST event test')
+
+myvar = {
+    'TableName': 'ccbda-example',
+    'Item': {
+        'thingid': {
+            'S': 'no idea'
+        }
+    }
+}
+
+post_event = {
+    "httpMethod": "POST",
+    "body": json.dumps(myvar, separators=(',', ':'))
+}
+result = lambda_handler(post_event, None)
+print('--------------------RESULT')
+print(json.dumps(result, indent=2))
+print('--------------------RESULT body')
+print(json.dumps(json.loads(result['body']), indent=2))
+
+
