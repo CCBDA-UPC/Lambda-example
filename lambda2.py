@@ -28,15 +28,17 @@ def lambda_handler(event, context):
     '''
     # print("Received event: " + json.dumps(event, indent=2))
 
+    operations = {
+        'DELETE': lambda dynamo, x: dynamo.delete_item(**x),
+        'GET': lambda dynamo, x: dynamo.scan(**x),
+        'POST': lambda dynamo, x: dynamo.put_item(**x),
+        'PUT': lambda dynamo, x: dynamo.update_item(**x),
+    }
+
     operation = event['httpMethod']
-    if operation is 'GET':
-        return respond(None, dynamo.scan(event['queryStringParameters']))
-    elif operation is 'POST':
-        return respond(None, dynamo.put_item(json.loads(event['body'])))
-    elif operation is 'DELETE':
-        return respond(None, dynamo.delete_item(json.loads(event['body'])))
-    elif operation is 'PUT':
-        return respond(None, dynamo.update_item(json.loads(event['body'])))
+    if operation in operations:
+        payload = event['queryStringParameters'] if operation == 'GET' else json.loads(event['body'])
+        return respond(None, operations[operation](dynamo, payload))
     else:
         return respond(ValueError('Unsupported method "{}"'.format(operation)))
 
@@ -55,6 +57,8 @@ print('--------------------RESULT')
 print(json.dumps(result, indent=2))
 print('--------------------RESULT body')
 print(json.dumps(json.loads(result['body']), indent=2))
+
+
 
 print('--------------------POST event test')
 
@@ -76,3 +80,5 @@ print('--------------------RESULT')
 print(json.dumps(result, indent=2))
 print('--------------------RESULT body')
 print(json.dumps(json.loads(result['body']), indent=2))
+
+
